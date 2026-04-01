@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="TIMSP_Quiz.vcxproj" />
+  <Project Path="TIMSP_Quiz.vcxproj" Id="d8b4daf5-3759-4f3b-918f-883fd4708bef" />
 </Solution>

@@ -2,11 +2,49 @@
 
 #include <fstream>
 #include <iostream>
+#include <sstream>
+
+namespace {
+    std::string getStringValue(const std::string& line, const std::string& key) {
+        const std::string token = "\"" + key + "\"";
+        const size_t keyPos = line.find(token);
+        if (keyPos == std::string::npos) return {};
+
+        const size_t first = line.find('"', keyPos + token.size());
+        const size_t second = (first == std::string::npos) ? std::string::npos : line.find('"', first + 1);
+        if (first == std::string::npos || second == std::string::npos) return {};
+
+        return line.substr(first + 1, second - first - 1);
+    }
+
+    int getIntValue(const std::string& line, const std::string& key) {
+        const std::string token = "\"" + key + "\"";
+        const size_t keyPos = line.find(token);
+        if (keyPos == std::string::npos) return 0;
+
+        const size_t colon = line.find(':', keyPos + token.size());
+        if (colon == std::string::npos) return 0;
+
+        std::stringstream ss(line.substr(colon + 1));
+        int value = 0;
+        ss >> value;
+        return value;
+    }
+} // namespace
 
 Tested::Tested(const std::string& name) : name_(name) {}
 
+void Tested::setName(const std::string& name) { name_ = name; }
+const std::string& Tested::getName() const { return name_; }
+
 int Tested::startCategory(Category& category) {
     const int score = category.start();
+
+    auto it = category_scores_.find(category.getName());
+    if (it != category_scores_.end()) {
+        total_points_ -= it->second;
+    }
+
     category_scores_[category.getName()] = score;
     total_points_ += score;
     return score;
@@ -48,4 +86,45 @@ void Tested::exportResultsToFile(const std::string& filename) const {
     out << "}\n";
 
     std::cout << "Results saved to " << filename << "\n";
+}
+
+bool Tested::importResultsFromFile(const std::string& filename) {
+    std::ifstream in(filename);
+    if (!in) {
+        std::cout << "Cannot open results file: " << filename << "\n";
+        return false;
+    }
+
+    std::unordered_map<std::string, int> importedScores;
+    int importedTotal = 0;
+    std::string importedName = name_;
+
+    std::string line;
+    while (std::getline(in, line)) {
+        if (line.find("\"tested\"") != std::string::npos) {
+            const std::string n = getStringValue(line, "tested");
+            if (!n.empty()) importedName = n;
+            continue;
+        }
+
+        if (line.find("\"total_points\"") != std::string::npos) {
+            importedTotal = getIntValue(line, "total_points");
+            continue;
+        }
+
+        if (line.find("\"category\"") != std::string::npos && line.find("\"score\"") != std::string::npos) {
+            const std::string category = getStringValue(line, "category");
+            const int score = getIntValue(line, "score");
+            if (!category.empty()) {
+                importedScores[category] = score;
+            }
+        }
+    }
+
+    category_scores_ = importedScores;
+    total_points_ = importedTotal;
+    name_ = importedName;
+
+    std::cout << "Results imported from " << filename << " for user: " << name_ << "\n";
+    return true;
 }

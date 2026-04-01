@@ -1,59 +1,64 @@
 #include "MainMenu.h"
 
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 
 namespace {
-std::string getStringValue(const std::string& line, const std::string& key) {
-    const std::string token = "\"" + key + "\"";
-    const size_t keyPos = line.find(token);
-    if (keyPos == std::string::npos) return {};
+    std::string getStringValue(const std::string& line, const std::string& key) {
+        const std::string token = "\"" + key + "\"";
+        const size_t keyPos = line.find(token);
+        if (keyPos == std::string::npos) return {};
 
-    const size_t first = line.find('"', keyPos + token.size());
-    const size_t second = (first == std::string::npos) ? std::string::npos : line.find('"', first + 1);
-    if (first == std::string::npos || second == std::string::npos) return {};
+        const size_t first = line.find('"', keyPos + token.size());
+        const size_t second = (first == std::string::npos) ? std::string::npos : line.find('"', first + 1);
+        if (first == std::string::npos || second == std::string::npos) return {};
 
-    return line.substr(first + 1, second - first - 1);
-}
+        return line.substr(first + 1, second - first - 1);
+    }
 
-int getIntValue(const std::string& line, const std::string& key) {
-    const std::string token = "\"" + key + "\"";
-    const size_t keyPos = line.find(token);
-    if (keyPos == std::string::npos) return 0;
+    int getIntValue(const std::string& line, const std::string& key) {
+        const std::string token = "\"" + key + "\"";
+        const size_t keyPos = line.find(token);
+        if (keyPos == std::string::npos) return 0;
 
-    const size_t colon = line.find(':', keyPos + token.size());
-    if (colon == std::string::npos) return 0;
+        const size_t colon = line.find(':', keyPos + token.size());
+        if (colon == std::string::npos) return 0;
 
-    std::stringstream ss(line.substr(colon + 1));
-    int value = 0;
-    ss >> value;
-    return value;
-}
+        std::stringstream ss(line.substr(colon + 1));
+        int value = 0;
+        ss >> value;
+        return value;
+    }
 
-std::vector<std::string> parseAnswers(const std::string& line) {
-    std::vector<std::string> answers;
+    std::vector<std::string> parseAnswers(const std::string& line) {
+        std::vector<std::string> answers;
 
-    const size_t left = line.find('[');
-    const size_t right = line.find(']');
-    if (left == std::string::npos || right == std::string::npos || right <= left) {
+        const size_t left = line.find('[');
+        const size_t right = line.find(']');
+        if (left == std::string::npos || right == std::string::npos || right <= left) {
+            return answers;
+        }
+
+        const std::string data = line.substr(left + 1, right - left - 1);
+        size_t pos = 0;
+        while (true) {
+            const size_t q1 = data.find('"', pos);
+            if (q1 == std::string::npos) break;
+            const size_t q2 = data.find('"', q1 + 1);
+            if (q2 == std::string::npos) break;
+
+            answers.push_back(data.substr(q1 + 1, q2 - q1 - 1));
+            pos = q2 + 1;
+        }
+
         return answers;
     }
 
-    const std::string data = line.substr(left + 1, right - left - 1);
-    size_t pos = 0;
-    while (true) {
-        const size_t q1 = data.find('"', pos);
-        if (q1 == std::string::npos) break;
-        const size_t q2 = data.find('"', q1 + 1);
-        if (q2 == std::string::npos) break;
-
-        answers.push_back(data.substr(q1 + 1, q2 - q1 - 1));
-        pos = q2 + 1;
+    void clearConsole() {
+        system("cls");
     }
-
-    return answers;
-}
 } // namespace
 
 MainMenu::MainMenu() : admin_("Admin"), tested_("User") {}
@@ -72,13 +77,19 @@ void MainMenu::run() {
 
         if (choice == 1) {
             login();
-        } else if (choice == 2) {
+        }
+        else if (choice == 2) {
+            clearConsole();
             printCategories();
-        } else if (choice == 3) {
+        }
+        else if (choice == 3) {
+            clearConsole();
             runModuleTests();
-        } else if (choice == 0) {
+        }
+        else if (choice == 0) {
             return;
-        } else {
+        }
+        else {
             std::cout << "Unknown menu item.\n";
         }
     }
@@ -167,18 +178,30 @@ void MainMenu::login() {
     std::cin >> mode;
 
     if (mode == 1) {
+        clearConsole();
         user_mode_ = UserMode::Admin;
         runAdminMode();
-    } else if (mode == 2) {
+    }
+    else if (mode == 2) {
+        std::string userName;
+        std::cout << "Enter tested user name: ";
+        std::getline(std::cin >> std::ws, userName);
+        if (!userName.empty()) {
+            tested_.setName(userName);
+        }
+
+        clearConsole();
         user_mode_ = UserMode::Tested;
         runTestedMode();
-    } else {
+    }
+    else {
         user_mode_ = UserMode::None;
     }
 }
 
 void MainMenu::logout() {
     user_mode_ = UserMode::None;
+    clearConsole();
     std::cout << "Logged out to main menu.\n";
 }
 
@@ -201,21 +224,32 @@ void MainMenu::runAdminMode() {
             std::cout << "Category name: ";
             std::getline(std::cin >> std::ws, name);
             admin_.addCategory(categories_, name);
-        } else if (choice == 2) {
+        }
+        else if (choice == 2) {
+            clearConsole();
+            printCategories();
             std::cout << "Category name to remove: ";
             std::getline(std::cin >> std::ws, name);
             admin_.removeCategory(categories_, name);
-        } else if (choice == 3) {
+        }
+        else if (choice == 3) {
+            clearConsole();
+            printCategories();
             std::cout << "Category name to edit: ";
             std::getline(std::cin >> std::ws, name);
             admin_.editCategory(categories_, name);
-        } else if (choice == 4) {
+        }
+        else if (choice == 4) {
             saveCategories("categories.json");
-        } else if (choice == 5) {
+        }
+        else if (choice == 5) {
+            clearConsole();
             printCategories();
-        } else if (choice == 0) {
+        }
+        else if (choice == 0) {
             logout();
-        } else {
+        }
+        else {
             std::cout << "Unknown menu item.\n";
         }
     }
@@ -224,10 +258,12 @@ void MainMenu::runAdminMode() {
 void MainMenu::runTestedMode() {
     while (user_mode_ == UserMode::Tested) {
         std::cout << "\n--- TESTED MODE ---\n";
+        std::cout << "User: " << tested_.getName() << "\n";
         std::cout << "1) Start category\n";
         std::cout << "2) Show results\n";
         std::cout << "3) Export results\n";
-        std::cout << "4) Show categories\n";
+        std::cout << "4) Import results\n";
+        std::cout << "5) Show categories\n";
         std::cout << "0) Exit mode\n";
         std::cout << "Select: ";
 
@@ -240,6 +276,7 @@ void MainMenu::runTestedMode() {
                 continue;
             }
 
+            clearConsole();
             printCategories();
             std::cout << "Category number: ";
             int index = 0;
@@ -250,17 +287,33 @@ void MainMenu::runTestedMode() {
                 continue;
             }
 
+            clearConsole();
             const int score = tested_.startCategory(categories_[index - 1]);
             std::cout << "Category done. Score: " << score << "\n";
-        } else if (choice == 2) {
+        }
+        else if (choice == 2) {
+            clearConsole();
             tested_.getResults();
-        } else if (choice == 3) {
+        }
+        else if (choice == 3) {
             tested_.exportResultsToFile("results.json");
-        } else if (choice == 4) {
+        }
+        else if (choice == 4) {
+            std::string fileName;
+            std::cout << "Results file to import (example: results.json): ";
+            std::getline(std::cin >> std::ws, fileName);
+            if (!fileName.empty()) {
+                tested_.importResultsFromFile(fileName);
+            }
+        }
+        else if (choice == 5) {
+            clearConsole();
             printCategories();
-        } else if (choice == 0) {
+        }
+        else if (choice == 0) {
             logout();
-        } else {
+        }
+        else {
             std::cout << "Unknown menu item.\n";
         }
     }
@@ -275,7 +328,7 @@ void MainMenu::printCategories() const {
     std::cout << "\nCategories:\n";
     for (size_t i = 0; i < categories_.size(); ++i) {
         std::cout << i + 1 << ") " << categories_[i].getName() << " (questions: "
-                  << categories_[i].getQuestions().size() << ")\n";
+            << categories_[i].getQuestions().size() << ")\n";
     }
 }
 
