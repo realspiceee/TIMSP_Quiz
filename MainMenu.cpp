@@ -238,16 +238,26 @@ void MainMenu::runAdminMode() {
             clearConsole();
             printCategories();
             if (!categories_.empty()) {
-                const int number = readInt("Enter category number to remove: ");
-                admin_.removeCategoryByIndex(categories_, number - 1);
+                const int number = readInt("Enter category number to remove (0 to cancel): ");
+                if (number == 0) {
+                    std::cout << "Action cancelled.\n";
+                }
+                else {
+                    admin_.removeCategoryByIndex(categories_, number - 1);
+                }
             }
         }
         else if (choice == 3) {
             clearConsole();
             printCategories();
             if (!categories_.empty()) {
-                const int number = readInt("Enter category number to edit: ");
-                admin_.editCategoryByIndex(categories_, number - 1);
+                const int number = readInt("Enter category number to edit (0 to cancel): ");
+                if (number == 0) {
+                    std::cout << "Action cancelled.\n";
+                }
+                else {
+                    admin_.editCategoryByIndex(categories_, number - 1);
+                }
             }
         }
         else if (choice == 4) {
@@ -286,7 +296,11 @@ void MainMenu::runTestedMode() {
 
             clearConsole();
             printCategories();
-            const int index = readInt("Enter category number: ");
+            const int index = readInt("Enter category number (0 to cancel): ");
+            if (index == 0) {
+                std::cout << "Action cancelled.\n";
+                continue;
+            }
             if (index <= 0 || index > static_cast<int>(categories_.size())) {
                 std::cout << "Invalid category number.\n";
                 continue;
