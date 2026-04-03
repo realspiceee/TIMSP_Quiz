@@ -13,6 +13,9 @@ public:
     void removeCategory(std::vector<Category>& categories, const std::string& categoryName) const;
     void editCategory(std::vector<Category>& categories, const std::string& categoryName) const;
 
+    void removeCategoryByIndex(std::vector<Category>& categories, int index) const;
+    void editCategoryByIndex(std::vector<Category>& categories, int index) const;
+
 private:
     std::string name_;
 };

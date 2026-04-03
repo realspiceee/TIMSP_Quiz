@@ -1,0 +1,49 @@
+{
+  "categories": [
+    {
+      "name": "Sports",
+      "questions": [
+        { "text": "How many players are on a football (soccer) team on the field?", "answers": ["11", "9", "7", "12"], "correct": 0, "points": 10 },
+        { "text": "How many minutes are in a standard basketball game (FIBA)?", "answers": ["48", "40", "60", "30"], "correct": 1, "points": 10 },
+        { "text": "Which country hosted the 2016 Summer Olympics?", "answers": ["China", "Brazil", "UK", "Japan"], "correct": 1, "points": 10 },
+        { "text": "In tennis, what score means zero points?", "answers": ["Nil", "Love", "Zero", "Blank"], "correct": 1, "points": 10 },
+        { "text": "How many sets are needed to win a men's Grand Slam tennis match?", "answers": ["2", "3", "4", "5"], "correct": 1, "points": 10 },
+        { "text": "What sport uses terms 'strike' and 'spare'?", "answers": ["Baseball", "Cricket", "Bowling", "Hockey"], "correct": 2, "points": 10 },
+        { "text": "How many players does a volleyball team have on court?", "answers": ["5", "6", "7", "8"], "correct": 1, "points": 10 },
+        { "text": "In which sport is the Stanley Cup awarded?", "answers": ["Basketball", "Ice Hockey", "Rugby", "Baseball"], "correct": 1, "points": 10 },
+        { "text": "How long is an Olympic swimming pool?", "answers": ["25 m", "40 m", "50 m", "100 m"], "correct": 2, "points": 10 },
+        { "text": "Which sport is known as the 'king of sports' globally?", "answers": ["Basketball", "Football (Soccer)", "Tennis", "Cricket"], "correct": 1, "points": 10 }
+      ]
+    },
+    {
+      "name": "Mathematics",
+      "questions": [
+        { "text": "What is 7 + 8?", "answers": ["15", "14", "16", "13"], "correct": 0, "points": 10 },
+        { "text": "What is 9 * 6?", "answers": ["42", "54", "56", "64"], "correct": 1, "points": 10 },
+        { "text": "What is the square root of 81?", "answers": ["7", "8", "9", "10"], "correct": 2, "points": 10 },
+        { "text": "What is 100 / 4?", "answers": ["20", "25", "30", "40"], "correct": 1, "points": 10 },
+        { "text": "What is 12 - 19?", "answers": ["-7", "7", "-5", "5"], "correct": 0, "points": 10 },
+        { "text": "What is 2 to the power of 5?", "answers": ["16", "24", "32", "64"], "correct": 2, "points": 10 },
+        { "text": "Which number is prime?", "answers": ["21", "29", "35", "49"], "correct": 1, "points": 10 },
+        { "text": "What is the value of pi rounded to two decimals?", "answers": ["3.12", "3.14", "3.16", "3.18"], "correct": 1, "points": 10 },
+        { "text": "How many degrees are in a right angle?", "answers": ["45", "60", "90", "120"], "correct": 2, "points": 10 },
+        { "text": "If x + 5 = 12, what is x?", "answers": ["5", "6", "7", "8"], "correct": 2, "points": 10 }
+      ]
+    },
+    {
+      "name": "Fruits",
+      "questions": [
+        { "text": "Which fruit is typically yellow and curved?", "answers": ["Apple", "Banana", "Pear", "Kiwi"], "correct": 1, "points": 10 },
+        { "text": "Which fruit is known for keeping the doctor away?", "answers": ["Apple", "Orange", "Peach", "Plum"], "correct": 0, "points": 10 },
+        { "text": "Which fruit has seeds on the outside?", "answers": ["Blueberry", "Strawberry", "Cherry", "Grape"], "correct": 1, "points": 10 },
+        { "text": "Which citrus fruit is usually orange in color?", "answers": ["Lime", "Lemon", "Orange", "Grapefruit"], "correct": 2, "points": 10 },
+        { "text": "Which fruit is green inside with tiny black seeds?", "answers": ["Kiwi", "Melon", "Avocado", "Pear"], "correct": 0, "points": 10 },
+        { "text": "Which fruit can be red, green, or black and grows in bunches?", "answers": ["Grape", "Berry", "Fig", "Date"], "correct": 0, "points": 10 },
+        { "text": "Which tropical fruit has a hard spiky shell and sweet yellow flesh?", "answers": ["Mango", "Papaya", "Pineapple", "Guava"], "correct": 2, "points": 10 },
+        { "text": "Which fruit is commonly used to make guacamole?", "answers": ["Avocado", "Tomato", "Cucumber", "Olive"], "correct": 0, "points": 10 },
+        { "text": "Which fruit is famous for being very sour and often used in tea?", "answers": ["Lemon", "Peach", "Apricot", "Banana"], "correct": 0, "points": 10 },
+        { "text": "Which fruit has a large pit and fuzzy skin?", "answers": ["Plum", "Nectarine", "Peach", "Pear"], "correct": 2, "points": 10 }
+      ]
+    }
+  ]
+}

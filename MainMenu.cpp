@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <sstream>
 
 namespace {
@@ -59,6 +60,21 @@ namespace {
     void clearConsole() {
         system("cls");
     }
+
+    int readInt(const std::string& prompt) {
+        int value = 0;
+        while (true) {
+            std::cout << prompt;
+            std::cin >> value;
+            if (!std::cin.fail()) {
+                return value;
+            }
+
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Please enter a valid number.\n";
+        }
+    }
 } // namespace
 
 MainMenu::MainMenu() : admin_("Admin"), tested_("User") {}
@@ -70,11 +86,8 @@ void MainMenu::run() {
         std::cout << "2) Show categories\n";
         std::cout << "3) Run module tests\n";
         std::cout << "0) Exit\n";
-        std::cout << "Select: ";
 
-        int choice = 0;
-        std::cin >> choice;
-
+        const int choice = readInt("Select: ");
         if (choice == 1) {
             login();
         }
@@ -174,8 +187,7 @@ void MainMenu::saveCategories(const std::string& filename) const {
 
 void MainMenu::login() {
     std::cout << "Select mode: 1) Administrator 2) Tested 0) Back\n";
-    int mode = 0;
-    std::cin >> mode;
+    const int mode = readInt("Select: ");
 
     if (mode == 1) {
         clearConsole();
@@ -214,13 +226,10 @@ void MainMenu::runAdminMode() {
         std::cout << "4) Save categories\n";
         std::cout << "5) Show categories\n";
         std::cout << "0) Exit mode\n";
-        std::cout << "Select: ";
 
-        int choice = 0;
-        std::cin >> choice;
-
-        std::string name;
+        const int choice = readInt("Select: ");
         if (choice == 1) {
+            std::string name;
             std::cout << "Category name: ";
             std::getline(std::cin >> std::ws, name);
             admin_.addCategory(categories_, name);
@@ -228,16 +237,18 @@ void MainMenu::runAdminMode() {
         else if (choice == 2) {
             clearConsole();
             printCategories();
-            std::cout << "Category name to remove: ";
-            std::getline(std::cin >> std::ws, name);
-            admin_.removeCategory(categories_, name);
+            if (!categories_.empty()) {
+                const int number = readInt("Enter category number to remove: ");
+                admin_.removeCategoryByIndex(categories_, number - 1);
+            }
         }
         else if (choice == 3) {
             clearConsole();
             printCategories();
-            std::cout << "Category name to edit: ";
-            std::getline(std::cin >> std::ws, name);
-            admin_.editCategory(categories_, name);
+            if (!categories_.empty()) {
+                const int number = readInt("Enter category number to edit: ");
+                admin_.editCategoryByIndex(categories_, number - 1);
+            }
         }
         else if (choice == 4) {
             saveCategories("categories.json");
@@ -265,11 +276,8 @@ void MainMenu::runTestedMode() {
         std::cout << "4) Import results\n";
         std::cout << "5) Show categories\n";
         std::cout << "0) Exit mode\n";
-        std::cout << "Select: ";
 
-        int choice = 0;
-        std::cin >> choice;
-
+        const int choice = readInt("Select: ");
         if (choice == 1) {
             if (categories_.empty()) {
                 std::cout << "No categories available.\n";
@@ -278,10 +286,7 @@ void MainMenu::runTestedMode() {
 
             clearConsole();
             printCategories();
-            std::cout << "Category number: ";
-            int index = 0;
-            std::cin >> index;
-
+            const int index = readInt("Enter category number: ");
             if (index <= 0 || index > static_cast<int>(categories_.size())) {
                 std::cout << "Invalid category number.\n";
                 continue;
@@ -296,15 +301,18 @@ void MainMenu::runTestedMode() {
             tested_.getResults();
         }
         else if (choice == 3) {
-            tested_.exportResultsToFile("results.json");
+            std::string fileName;
+            std::cout << "Export file name (empty for results.json): ";
+            std::getline(std::cin >> std::ws, fileName);
+            if (fileName.empty()) fileName = "results.json";
+            tested_.exportResultsToFile(fileName);
         }
         else if (choice == 4) {
             std::string fileName;
-            std::cout << "Results file to import (example: results.json): ";
+            std::cout << "Import file name (empty for results.json): ";
             std::getline(std::cin >> std::ws, fileName);
-            if (!fileName.empty()) {
-                tested_.importResultsFromFile(fileName);
-            }
+            if (fileName.empty()) fileName = "results.json";
+            tested_.importResultsFromFile(fileName);
         }
         else if (choice == 5) {
             clearConsole();
@@ -337,7 +345,7 @@ void MainMenu::runModuleTests() const {
     {
         std::vector<Category> empty;
         Administrator admin("TestAdmin");
-        admin.removeCategory(empty, "missing");
+        admin.removeCategoryByIndex(empty, 0);
         std::cout << "OK\n";
     }
 

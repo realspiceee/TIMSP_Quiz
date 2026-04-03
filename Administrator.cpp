@@ -45,19 +45,23 @@ void Administrator::editCategory(std::vector<Category>& categories, const std::s
                 std::cout << "New category name: ";
                 std::getline(std::cin >> std::ws, newName);
                 c.setName(newName);
-            } else if (choice == 2) {
+            }
+            else if (choice == 2) {
                 c.addQuestion();
-            } else if (choice == 3) {
+            }
+            else if (choice == 3) {
                 int index = 0;
                 std::cout << "Question index (from 1): ";
                 std::cin >> index;
                 c.removeQuestion(index - 1);
-            } else if (choice == 4) {
+            }
+            else if (choice == 4) {
                 int index = 0;
                 std::cout << "Question index (from 1): ";
                 std::cin >> index;
                 c.editQuestion(index - 1);
-            } else {
+            }
+            else {
                 std::cout << "Unknown option.\n";
             }
             return;
@@ -65,4 +69,33 @@ void Administrator::editCategory(std::vector<Category>& categories, const std::s
     }
 
     std::cout << "Category not found.\n";
+}
+
+void Administrator::removeCategoryByIndex(std::vector<Category>& categories, int index) const {
+    if (categories.empty()) {
+        std::cout << "Category list is empty. Nothing to remove.\n";
+        return;
+    }
+
+    if (index < 0 || index >= static_cast<int>(categories.size())) {
+        std::cout << "Invalid category number.\n";
+        return;
+    }
+
+    categories.erase(categories.begin() + index);
+    std::cout << "Category removed.\n";
+}
+
+void Administrator::editCategoryByIndex(std::vector<Category>& categories, int index) const {
+    if (categories.empty()) {
+        std::cout << "Category list is empty. Nothing to edit.\n";
+        return;
+    }
+
+    if (index < 0 || index >= static_cast<int>(categories.size())) {
+        std::cout << "Invalid category number.\n";
+        return;
+    }
+
+    editCategory(categories, categories[index].getName());
 }
